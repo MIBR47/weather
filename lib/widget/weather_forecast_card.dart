@@ -27,7 +27,7 @@ class weatherForecastCard extends StatelessWidget {
         child: Stack(
           children: [
             WeatherBg(
-              weatherType: WeatherType.overcast,
+              weatherType: weatherBackgroud(weather.weatherMain.toString()),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.1,
             ),
@@ -67,4 +67,33 @@ class weatherForecastCard extends StatelessWidget {
       ),
     );
   }
+}
+
+WeatherType weatherBackgroud(String weather) {
+  WeatherType type;
+
+  switch (weather) {
+    case "Clear":
+      type = WeatherType.sunny;
+      break;
+    case "Clouds":
+      type = WeatherType.cloudyNight;
+      break;
+    case "Rain":
+      type = WeatherType.heavyRainy;
+      break;
+    case "Drizzle":
+      type = WeatherType.lightRainy;
+      break;
+    case "Thunderstorm":
+      type = WeatherType.thunder;
+      break;
+    case "Snow":
+      type = WeatherType.lightSnow;
+      break;
+    default:
+      type = WeatherType.sunny;
+  }
+
+  return type;
 }

@@ -98,7 +98,7 @@ class WeatherCard extends StatelessWidget {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/sun.png',
+                      weatherImage(weather),
                       // color: whiteColor,
                       height: 70,
                       width: 70,
@@ -117,4 +117,33 @@ class WeatherCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String weatherImage(String weather) {
+  String image;
+
+  switch (weather) {
+    case "Clear":
+      image = 'assets/sun.png';
+      break;
+    case "Clouds":
+      image = 'assets/cloud.png';
+      break;
+    case "Rain":
+      image = 'assets/rain.png';
+      break;
+    case "Drizzle":
+      image = 'assets/Drizzle.png';
+      break;
+    case "Thunderstorm":
+      image = 'assets/storm.png';
+      break;
+    case "Snow":
+      image = 'assets/snow.png';
+      break;
+    default:
+      image = 'assets/sun.png';
+  }
+
+  return image;
 }

@@ -5,9 +5,12 @@ import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_application/pages/search_page.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
+import 'package:page_transition/page_transition.dart';
+
 // enum weatherCondition{cloud.png,};
 
 class DashboardPage extends StatefulWidget {
@@ -112,58 +115,79 @@ class _DashboardPageState extends State<DashboardPage> {
       );
     }
 
+    Widget search() {
+      return InkWell(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.90,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          height: 56,
+          child: TextField(
+            readOnly: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: const SearchPage(),
+                ),
+              );
+            },
+            // obscureText: true,
+            decoration: InputDecoration(
+              hintText: "Search...",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              suffixIcon: Icon(
+                Icons.search,
+                color: Colors.blueAccent,
+              ),
+              // suffixIconColor: primaryBlue,
+              // labelText: 'Try Chiropractic',
+              // labelStyle: TextStyle(
+              //   color: grey,
+              // ),
+            ),
+          ),
+        ),
+      );
+    }
+
     Widget header() {
       return Stack(
         children: [
           WeatherBg(
-            weatherType: WeatherType.thunder,
+            weatherType: weatherBackgroud(data.weatherMain.toString()),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.45,
           ),
-          Container(
-            // decoration: const BoxDecoration(
-            //   image: DecorationImage(
-            //     image: AssetImage('assets/header.png'),
-            //     fit: BoxFit.fill,
-            //   ),
-            // ),
-            child: Column(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 22, right: 22, top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/dashboard_logo.png',
-                              color: whiteColor,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              'Dashboard',
-                              style: whiteTextStyle.copyWith(
-                                  fontSize: 22, fontWeight: semiBold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+
+          // decoration: const BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage('assets/header.png'),
+          //     fit: BoxFit.fill,
+          //   ),
+          // ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: search(),
                 ),
-                Column(
-                  children: [
-                    nama(),
-                    menu(),
-                  ],
-                ),
-              ],
-            ),
+              ),
+              Column(
+                children: [
+                  nama(),
+                  menu(),
+                ],
+              ),
+            ],
           ),
         ],
       );
@@ -210,27 +234,27 @@ class _DashboardPageState extends State<DashboardPage> {
         // height: 195,
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Attendance History',
-                  style: trueBlackTextStyle.copyWith(
-                      fontSize: 16, fontWeight: semiBold),
-                ),
-                InkWell(
-                  child: Text(
-                    // '${authProvider.user.access_token}',
-                    'See all',
-                    style: trueBlackTextStyle.copyWith(
-                        fontSize: 14, fontWeight: light),
-                  ),
-                  onTap: () {
-                    // attendanceHandler();
-                  },
-                )
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       'Attendance History',
+            //       style: trueBlackTextStyle.copyWith(
+            //           fontSize: 16, fontWeight: semiBold),
+            //     ),
+            //     InkWell(
+            //       child: Text(
+            //         // '${authProvider.user.access_token}',
+            //         'See all',
+            //         style: trueBlackTextStyle.copyWith(
+            //             fontSize: 14, fontWeight: light),
+            //       ),
+            //       onTap: () {
+            //         // attendanceHandler();
+            //       },
+            //     )
+            //   ],
+            // ),
             card(),
           ],
         ),
@@ -260,4 +284,33 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
+}
+
+WeatherType weatherBackgroud(String weather) {
+  WeatherType type;
+
+  switch (weather) {
+    case "Clear":
+      type = WeatherType.sunny;
+      break;
+    case "Clouds":
+      type = WeatherType.cloudyNight;
+      break;
+    case "Rain":
+      type = WeatherType.heavyRainy;
+      break;
+    case "Drizzle":
+      type = WeatherType.lightRainy;
+      break;
+    case "Thunderstorm":
+      type = WeatherType.thunder;
+      break;
+    case "Snow":
+      type = WeatherType.lightSnow;
+      break;
+    default:
+      type = WeatherType.sunny;
+  }
+
+  return type;
 }
