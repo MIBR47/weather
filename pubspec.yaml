@@ -41,6 +41,9 @@ dependencies:
   intl: ^0.17.0
   lazy_loading_list: ^1.0.1
   page_transition: ^2.0.9
+  fluttertoast: ^8.0.9
+  geocoding: ^2.0.4
+  geolocator: ^9.0.1
   
 
 dev_dependencies:

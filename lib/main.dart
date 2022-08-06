@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_application/pages/dashboard_page.dart';
+import 'package:weather_application/pages/filter_page.dart';
 
+import 'Service/Dashboard_argument.dart';
 import 'pages/splash_page.dart';
 
 void main() {
@@ -22,7 +24,9 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         '/splash': (context) => SplashPage(),
-        '/dashboard': (context) => DashboardPage(),
+        '/dashboard': (context) => DashboardPage(
+            ModalRoute.of(context)!.settings.arguments as DashboardArguments),
+        '/filter': (context) => FilterPage(),
       },
     );
   }

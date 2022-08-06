@@ -2,10 +2,14 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_application/Service/Dashboard_argument.dart';
 import 'package:weather_application/pages/search_page.dart';
+import 'package:weather_application/pages/splash_page.dart';
+import 'package:weather_application/pages/weather_forecast_list_pages.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
@@ -14,7 +18,8 @@ import 'package:page_transition/page_transition.dart';
 // enum weatherCondition{cloud.png,};
 
 class DashboardPage extends StatefulWidget {
-  DashboardPage({Key? key}) : super(key: key);
+  DashboardArguments arguments;
+  DashboardPage(this.arguments, {Key? key}) : super(key: key);
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -28,22 +33,22 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
-    Weather5days();
+    Weather5days(widget.arguments.position);
     super.initState();
   }
 
-  Weather5days() async {
+  Weather5days(Position position) async {
     /// Removes keyboard
     // FocusScope.of(context).requestFocus(FocusNode());
     String key = "e253b441ac228c01226cb2ddbecfded4";
-    double lat = -6.245185939299144;
-    double lon = 106.96004566267743;
+    double lat = position.latitude;
+    double lon = position.longitude;
     String cityName = 'bekasi';
     wf = WeatherFactory(key);
     List<Weather> weather = await wf.fiveDayForecastByLocation(lat, lon);
-    Weather weather2 = await wf.currentWeatherByCityName(cityName);
+    // Weather weather2 = await wf.currentWeatherByCityName(cityName);
     setState(() {
-      print(weather2);
+      // print(weather2);
       _listDataWeather = weather;
       // print(_listDataWeather);
       // _state = AppState.FINISHED_DOWNLOADING;
@@ -54,7 +59,9 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     // WeatherFactory wf = WeatherFactory(key);
     // late Weather? data = _data;
-    final data = ModalRoute.of(context)?.settings.arguments as Weather;
+    final data =
+        ModalRoute.of(context)?.settings.arguments as DashboardArguments;
+    // final position = ModalRoute.of(context)?.settings.arguments as Weather;
 
     Widget nama() {
       return Column(
@@ -72,13 +79,13 @@ class _DashboardPageState extends State<DashboardPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            data.areaName.toString(),
+                            data.weather.areaName.toString(),
                             textAlign: TextAlign.left,
                             style: whiteTextStyle.copyWith(
                                 fontSize: 20, fontWeight: semiBold),
                           ),
                           Text(
-                            formatter.format(data.date!).toString(),
+                            formatter.format(data.weather.date!).toString(),
                             textAlign: TextAlign.left,
                             style: whiteTextStyle.copyWith(
                                 fontSize: 16, fontWeight: semiBold),
@@ -102,13 +109,13 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TemperatureCard(
-              temperature: data.temperature.toString(),
+              temperature: data.weather.temperature.toString(),
             ),
             SizedBox(
               width: 10,
             ),
             WeatherCard(
-              weather: data.weatherMain.toString(),
+              weather: data.weather.weatherMain.toString(),
             ),
           ],
         ),
@@ -160,7 +167,7 @@ class _DashboardPageState extends State<DashboardPage> {
       return Stack(
         children: [
           WeatherBg(
-            weatherType: weatherBackgroud(data.weatherMain.toString()),
+            weatherType: weatherBackgroud(data.weather.weatherMain.toString()),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.45,
           ),
@@ -194,36 +201,41 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     Widget card() {
-      return Container(
-        width: MediaQuery.of(context).size.width * 0.90,
-        height: MediaQuery.of(context).size.height * 0.4,
-        child: ListView.builder(
-          itemCount: _listDataWeather.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            // final weather = _listDataWeather[index];
-            return Visibility(
-              visible: index < 5,
-              child: LazyLoadingList(
-                initialSizeOfItems: 5,
-                index: index,
-                hasMore: true,
-                loadMore: () => print('Loading More'),
-                child: weatherForecastCard(weather: _listDataWeather[index]),
-              ),
-            );
+      return Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.90,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: ListView.builder(
+              itemCount: _listDataWeather.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                // final weather = _listDataWeather[index];
+                return Visibility(
+                  visible: index < 5,
+                  child: LazyLoadingList(
+                    initialSizeOfItems: 5,
+                    index: index,
+                    hasMore: true,
+                    loadMore: () => print('Loading More'),
+                    child:
+                        weatherForecastCard(weather: _listDataWeather[index]),
+                  ),
+                );
 
-            // ignore: avoid_print
-            // print(outlets);
-            // // setState(() {});
-            // return ShopCard(
-            //   outlets,
-            //   VisitPage(),
-            // );
-          },
-        ),
+                // ignore: avoid_print
+                // print(outlets);
+                // // setState(() {});
+                // return ShopCard(
+                //   outlets,
+                //   VisitPage(),
+                // );
+              },
+            ),
+          ),
+        ],
       );
     }
 
@@ -234,27 +246,31 @@ class _DashboardPageState extends State<DashboardPage> {
         // height: 195,
         child: Column(
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       'Attendance History',
-            //       style: trueBlackTextStyle.copyWith(
-            //           fontSize: 16, fontWeight: semiBold),
-            //     ),
-            //     InkWell(
-            //       child: Text(
-            //         // '${authProvider.user.access_token}',
-            //         'See all',
-            //         style: trueBlackTextStyle.copyWith(
-            //             fontSize: 14, fontWeight: light),
-            //       ),
-            //       onTap: () {
-            //         // attendanceHandler();
-            //       },
-            //     )
-            //   ],
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '5 Day Weather Forecast',
+                  style: trueBlackTextStyle.copyWith(
+                      fontSize: 16, fontWeight: semiBold),
+                ),
+                InkWell(
+                  child: Text(
+                    'See All',
+                    style: trueBlackTextStyle.copyWith(
+                        fontSize: 14, fontWeight: light),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WeatherListPage(
+                                  listDataWeather: _listDataWeather,
+                                )));
+                  },
+                )
+              ],
+            ),
             card(),
           ],
         ),

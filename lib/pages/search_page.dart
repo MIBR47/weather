@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weather/weather.dart';
+import 'package:weather_application/Service/filter_argument.dart';
 
 import '../theme.dart';
 
@@ -10,6 +12,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  TextEditingController weatherController = TextEditingController(text: '');
   var selectedIndex = 0;
   String selectedChip = '';
 
@@ -19,39 +22,19 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   // This function is called whenever the text field changes
-  void _runFilter(String enteredKeyword) {}
-
-  // Future<String?> runChips(int index) async {
-  //   final chips = selectedChip[index];
-  //   if (chips.isEmpty) {
-  //     final doctor = _foundDoctor[index];
-  //   } else {
-  //     final doctor = _foundDoctor
-  //         .where((element) =>
-  //             element.profesi!.toLowerCase().contains(chips.toLowerCase()))
-  //         .toList()[index];
-  //   }
-  //   return doctor;
-  // }
-
-  // void _runChips(String clickedChip) {
-  //   List<Doctor> resultsCategory = [];
-  //   if (clickedChip.isEmpty) {
-  //     // if the search field is empty or only contains white-space, we'll display all users
-  //     resultsCategory = allDoctor;
-  //   } else {
-  //     resultsCategory = allDoctor
-  //         .where((user) =>
-  //             user.profesi!.toLowerCase().contains(clickedChip.toLowerCase()))
-  //         .toList();
-  //     // we use the toLowerCase() method to make it case-insensitive
-  //   }
-
-  //   // Refresh the UI
-  //   setState(() {
-  //     _foundDoctor = resultsCategory;
-  //   });
-  // }
+  _runFilter(String enteredKeyword) async {
+    String key = "e253b441ac228c01226cb2ddbecfded4";
+    Weather? _data;
+    late WeatherFactory ws;
+    ws = WeatherFactory(key);
+    Weather weather = await ws.currentWeatherByCityName(enteredKeyword);
+    Navigator.of(context).pushReplacementNamed(
+      '/filter',
+      arguments: filterArguments(weather),
+    );
+    // Navigator.of(context)
+    //     .pushReplacementNamed('/dashboard', arguments: weather);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +42,14 @@ class _SearchPageState extends State<SearchPage> {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
         child: TextField(
+          controller: weatherController,
           autofocus: true,
-          onChanged: (value) => _runFilter(value),
+          onSubmitted: (value) async {
+            await _runFilter(value);
+          },
+          // onChanged: (value) => _runFilter(value),
           decoration: InputDecoration(
-              hintText: "Try Chiropractic",
+              hintText: "Search...",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -73,91 +60,6 @@ class _SearchPageState extends State<SearchPage> {
         ),
       );
     }
-
-    // Widget filtercard() {
-    //   return SingleChildScrollView(
-    //     scrollDirection: Axis.horizontal,
-    //     child: Row(
-    //       children: [
-    //         SizedBox(
-    //           // width: MediaQuery.of(context).size.width,
-    //           height: MediaQuery.of(context).size.height * 0.1,
-    //           child: ListView.builder(
-    //             scrollDirection: Axis.horizontal,
-    //             itemCount: doctors.length,
-    //             shrinkWrap: true,
-    //             physics: const NeverScrollableScrollPhysics(),
-    //             itemBuilder: ((context, index) {
-    //               // ValueKey(doctors[index].id);
-    //               final doctor = doctors[index];
-    //               return Padding(
-    //                 padding: const EdgeInsets.only(right: 8.0),
-    //                 child: ChoiceChip(
-    //                   label: Text(
-    //                     doctor.profesi!,
-    //                     style: selectedIndex == doctor.id
-    //                         ? whiteTextStyle.copyWith(
-    //                             fontSize: 16, fontWeight: reguler)
-    //                         : greyTextStyle.copyWith(
-    //                             fontSize: 16, fontWeight: reguler),
-    //                   ),
-    //                   selected: selectedIndex == doctor.id,
-    //                   shape: StadiumBorder(
-    //                       side: BorderSide(
-    //                           color: selectedIndex == doctor.id
-    //                               ? Colors.transparent
-    //                               : grey40)),
-    //                   selectedColor: secondaryBlue,
-    //                   disabledColor: white,
-    //                   backgroundColor: white,
-    //                   onSelected: (bool value) {
-    //                     setState(() {
-    //                       selectedIndex = doctor.id!;
-    //                       selectedChip = doctor.profesi!;
-    //                       if (selectedChip.isEmpty) {
-    //                         _foundCategory = allDoctor;
-    //                       } else {
-    //                         _foundCategory = allDoctor
-    //                             .where((element) => element.profesi!
-    //                                 .toLowerCase()
-    //                                 .contains(selectedChip.toLowerCase()))
-    //                             .toList();
-    //                       }
-    //                       print(selectedChip);
-    //                       // return _runChips(value);
-    //                     });
-    //                   },
-    //                 ),
-    //               );
-    //             }),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
-
-    // Widget cardlist() {
-    //   return SizedBox(
-    //     child: _foundDoctor.isNotEmpty
-    //         ? ListView.builder(
-    //             itemCount: _foundDoctor.length,
-    //             shrinkWrap: true,
-    //             physics: const NeverScrollableScrollPhysics(),
-    //             itemBuilder: ((context, index) {
-    //               // ValueKey(_foundDoctor[index].id);
-    //               final doctor = _foundDoctor[index];
-    //               return TherapiestCard(
-    //                 doctor,
-    //               );
-    //             }),
-    //           )
-    //         : const Text(
-    //             'No results found',
-    //             style: TextStyle(fontSize: 24),
-    //           ),
-    //   );
-    // }
 
     Widget body() {
       return Center(
