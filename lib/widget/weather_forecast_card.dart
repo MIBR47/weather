@@ -4,9 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_application/theme.dart';
 
-class weatherForecastCard extends StatelessWidget {
-  Weather weather;
-  weatherForecastCard({required this.weather, Key? key}) : super(key: key);
+class WeatherForecastCard extends StatelessWidget {
+  final Weather weather;
+  const WeatherForecastCard({required this.weather, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

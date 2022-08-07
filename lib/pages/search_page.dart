@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_application/Service/filter_argument.dart';
 
-import '../theme.dart';
-
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -24,13 +22,16 @@ class _SearchPageState extends State<SearchPage> {
   // This function is called whenever the text field changes
   _runFilter(String enteredKeyword) async {
     String key = "e253b441ac228c01226cb2ddbecfded4";
-    Weather? _data;
     late WeatherFactory ws;
     ws = WeatherFactory(key);
+    //  await ws.currentWeatherByCityName(enteredKeyword) == ws,.??
+
     Weather weather = await ws.currentWeatherByCityName(enteredKeyword);
+
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacementNamed(
       '/filter',
-      arguments: filterArguments(weather),
+      arguments: FilterArguments(weather),
     );
     // Navigator.of(context)
     //     .pushReplacementNamed('/dashboard', arguments: weather);
@@ -53,7 +54,7 @@ class _SearchPageState extends State<SearchPage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              suffixIcon: Icon(
+              suffixIcon: const Icon(
                 Icons.search,
                 color: Colors.blueAccent,
               )),

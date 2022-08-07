@@ -1,25 +1,22 @@
-import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_application/Service/Dashboard_argument.dart';
 import 'package:weather_application/pages/search_page.dart';
-import 'package:weather_application/pages/splash_page.dart';
 import 'package:weather_application/pages/weather_forecast_list_pages.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
 import 'package:page_transition/page_transition.dart';
 
-// enum weatherCondition{cloud.png,};
-
 class DashboardPage extends StatefulWidget {
-  DashboardArguments arguments;
-  DashboardPage(this.arguments, {Key? key}) : super(key: key);
+  final DashboardArguments arguments;
+  const DashboardPage(this.arguments, {Key? key}) : super(key: key);
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -29,21 +26,19 @@ class _DashboardPageState extends State<DashboardPage> {
   final DateFormat formatter = DateFormat('E, dd MMM yyyy');
   late WeatherFactory wf;
   List<Weather> _listDataWeather = [];
-  Future? _initFuture;
 
   @override
   void initState() {
-    Weather5days(widget.arguments.position);
+    weather5days(widget.arguments.position);
     super.initState();
   }
 
-  Weather5days(Position position) async {
+  weather5days(Position position) async {
     /// Removes keyboard
     // FocusScope.of(context).requestFocus(FocusNode());
     String key = "e253b441ac228c01226cb2ddbecfded4";
     double lat = position.latitude;
     double lon = position.longitude;
-    String cityName = 'bekasi';
     wf = WeatherFactory(key);
     List<Weather> weather = await wf.fiveDayForecastByLocation(lat, lon);
     // Weather weather2 = await wf.currentWeatherByCityName(cityName);
@@ -67,35 +62,31 @@ class _DashboardPageState extends State<DashboardPage> {
       return Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 30, right: 12, top: 10),
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data.weather.areaName.toString(),
-                            textAlign: TextAlign.left,
-                            style: whiteTextStyle.copyWith(
-                                fontSize: 20, fontWeight: semiBold),
-                          ),
-                          Text(
-                            formatter.format(data.weather.date!).toString(),
-                            textAlign: TextAlign.left,
-                            style: whiteTextStyle.copyWith(
-                                fontSize: 16, fontWeight: semiBold),
-                          ),
-                        ],
+            padding: const EdgeInsets.only(left: 30, right: 12, top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.weather.areaName.toString(),
+                        textAlign: TextAlign.left,
+                        style: whiteTextStyle.copyWith(
+                            fontSize: 20, fontWeight: semiBold),
                       ),
-                    ),
-                  )
-                ],
-              ),
+                      Text(
+                        formatter.format(data.weather.date!).toString(),
+                        textAlign: TextAlign.left,
+                        style: whiteTextStyle.copyWith(
+                            fontSize: 16, fontWeight: semiBold),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           )
         ],
@@ -104,14 +95,14 @@ class _DashboardPageState extends State<DashboardPage> {
 
     Widget menu() {
       return Container(
-        margin: EdgeInsets.only(top: 18),
+        margin: const EdgeInsets.only(top: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TemperatureCard(
               temperature: data.weather.temperature.toString(),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             WeatherCard(
@@ -148,7 +139,7 @@ class _DashboardPageState extends State<DashboardPage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              suffixIcon: Icon(
+              suffixIcon: const Icon(
                 Icons.search,
                 color: Colors.blueAccent,
               ),
@@ -184,7 +175,7 @@ class _DashboardPageState extends State<DashboardPage> {
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
                 child: Padding(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 20),
                   child: search(),
                 ),
               ),
@@ -203,7 +194,7 @@ class _DashboardPageState extends State<DashboardPage> {
     Widget card() {
       return Column(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.90,
             height: MediaQuery.of(context).size.height * 0.4,
             child: ListView.builder(
@@ -219,9 +210,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     initialSizeOfItems: 5,
                     index: index,
                     hasMore: true,
+                    // ignore: avoid_print
                     loadMore: () => print('Loading More'),
                     child:
-                        weatherForecastCard(weather: _listDataWeather[index]),
+                        WeatherForecastCard(weather: _listDataWeather[index]),
                   ),
                 );
 
@@ -242,7 +234,7 @@ class _DashboardPageState extends State<DashboardPage> {
     Widget listWeather() {
       return Container(
         width: MediaQuery.of(context).size.width * 0.85,
-        margin: EdgeInsets.only(top: 22, bottom: 10),
+        margin: const EdgeInsets.only(top: 22, bottom: 10),
         // height: 195,
         child: Column(
           children: [
@@ -271,7 +263,12 @@ class _DashboardPageState extends State<DashboardPage> {
                 )
               ],
             ),
-            card(),
+            _listDataWeather == []
+                ? LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: 200,
+                  )
+                : card(),
           ],
         ),
       );

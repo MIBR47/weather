@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:weather_application/theme.dart';
 
 class TemperatureCard extends StatelessWidget {
-  String temperature;
-  TemperatureCard({required this.temperature, Key? key}) : super(key: key);
+  final String temperature;
+  const TemperatureCard({required this.temperature, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class TemperatureCard extends StatelessWidget {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 1,
               blurRadius: 7,
-              offset: Offset(0, 5), // changes position of shadow
+              offset: const Offset(0, 5), // changes position of shadow
             ),
           ],
         ),
@@ -55,9 +56,16 @@ class TemperatureCard extends StatelessWidget {
   }
 }
 
-class WeatherCard extends StatelessWidget {
-  String weather;
-  WeatherCard({required this.weather, Key? key}) : super(key: key);
+class HumidityCard extends StatelessWidget {
+  final String data;
+  final String name;
+  final double fontsize;
+  const HumidityCard(
+      {required this.data,
+      Key? key,
+      required this.name,
+      required this.fontsize})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +84,58 @@ class WeatherCard extends StatelessWidget {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 1,
               blurRadius: 7,
-              offset: Offset(0, 5), // changes position of shadow
+              offset: const Offset(0, 5), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                style: trueBlackTextStyle.copyWith(
+                    fontSize: 12, fontWeight: semiBold),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  data,
+                  style: trueBlackTextStyle.copyWith(
+                      fontSize: fontsize, fontWeight: semiBold),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WeatherCard extends StatelessWidget {
+  final String weather;
+  const WeatherCard({required this.weather, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        // padding: EdgeInsets.all(25),
+        height: MediaQuery.of(context).size.height * 0.2,
+        width: MediaQuery.of(context).size.width * 0.4,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: whiteColor,
+          border: Border.all(color: whiteColor, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: const Offset(0, 5), // changes position of shadow
             ),
           ],
         ),

@@ -5,15 +5,16 @@ import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
 
 class WeatherListPage extends StatelessWidget {
-  List<Weather> listDataWeather;
-  WeatherListPage({required this.listDataWeather, Key? key}) : super(key: key);
+  final List<Weather> listDataWeather;
+  const WeatherListPage({required this.listDataWeather, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget card() {
       return Column(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.90,
             height: MediaQuery.of(context).size.height * 1.5,
             child: ListView.builder(
@@ -27,8 +28,9 @@ class WeatherListPage extends StatelessWidget {
                   initialSizeOfItems: 5,
                   index: index,
                   hasMore: true,
+                  // ignore: avoid_print
                   loadMore: () => print('Loading More'),
-                  child: weatherForecastCard(weather: listDataWeather[index]),
+                  child: WeatherForecastCard(weather: listDataWeather[index]),
                 );
 
                 // ignore: avoid_print
@@ -48,11 +50,11 @@ class WeatherListPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
+          preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             toolbarHeight: 120,
             leading: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.black,
               ),
@@ -60,7 +62,7 @@ class WeatherListPage extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             centerTitle: true,
             backgroundColor: Colors.white,
             bottomOpacity: 0.0,

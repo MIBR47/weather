@@ -19,6 +19,8 @@ class SplashPage extends StatefulWidget {
 class _MSplashPage extends State<SplashPage> {
   String currentAddress = 'My Address';
   Position? currentposition;
+  String key = "e253b441ac228c01226cb2ddbecfded4";
+  late WeatherFactory ws;
   @override
   void initState() {
     // clear();
@@ -37,12 +39,11 @@ class _MSplashPage extends State<SplashPage> {
     // FocusScope.of(context).requestFocus(FocusNode());
     double lat = currentposition.latitude;
     double lon = currentposition.longitude;
-    String key = "e253b441ac228c01226cb2ddbecfded4";
-    late WeatherFactory ws;
-    Weather? _data;
+
     ws = WeatherFactory(key);
     Weather weather = await ws.currentWeatherByLocation(lat, lon);
 
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacementNamed(
       '/dashboard',
       arguments: DashboardArguments(weather, currentposition),
@@ -89,6 +90,7 @@ class _MSplashPage extends State<SplashPage> {
 
       return currentposition;
     } catch (e) {
+      // ignore: avoid_print
       print(e);
 
       return null;
