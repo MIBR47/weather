@@ -1,4 +1,7 @@
+// ignore: duplicate_ignore
 // ignore: file_names
+// ignore_for_file: file_names
+
 import 'package:weather_application/model/main_Weather_Model.dart';
 import 'package:weather_application/model/temperature_Model.dart';
 

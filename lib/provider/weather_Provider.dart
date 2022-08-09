@@ -1,5 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/widgets.dart';
-import 'package:weather_application/Service/weatherService.dart';
+import 'package:weather_application/Service/weather_Service.dart';
 import 'package:weather_application/model/forecast_Model.dart';
 import 'package:weather_application/model/weather_Model.dart';
 
@@ -26,8 +28,8 @@ class WeatherProvider with ChangeNotifier {
       _weather = weather;
       return true;
     } catch (e) {
-      print(e);
-      print('something went wrong with Provider get weahter');
+      Exception(e);
+      Exception('something went wrong with Provider get weahter');
       return false;
     }
   }
@@ -40,19 +42,19 @@ class WeatherProvider with ChangeNotifier {
       return true;
     } catch (e) {
       Exception(e);
-      Exception('Salah di get Forecast provider');
+      Exception('something went wrong with get Forecast provider');
       return false;
     }
   }
 
-  Future<bool> getWeatherCity(String city) async {
+  Future<bool> getWeatherByCityName(String city) async {
     try {
       WeatherModel weather = await WeatherService().getWeatherByCityName(city);
       _weather = weather;
       return true;
     } catch (e) {
-      print(e);
-      print('Salah di Provider');
+      Exception(e);
+      Exception('something went wrong with get weather by city name provider');
       return false;
     }
   }

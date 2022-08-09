@@ -87,12 +87,13 @@ class _MSplashPage extends State<SplashPage> {
 
     await Provider.of<WeatherProvider>(context, listen: false)
         .getWeather(lat, long);
-    await Provider.of<WeatherProvider>(context, listen: false)
-        .getforecast(lat, long);
-    Navigator.of(context).pushReplacementNamed(
-      '/dashboard',
-      arguments: DashboardArguments(currentposition),
-    );
+
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed(
+        '/dashboard',
+        arguments: DashboardArguments(currentposition),
+      );
+    }
 
     // Navigator.push(
     //     context, MaterialPageRoute(builder: (context) => HomePage()));

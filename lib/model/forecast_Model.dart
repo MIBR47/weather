@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, prefer_typing_uninitialized_variables
-import 'package:weather_application/model/forecastDaily_Model.dart';
-import 'package:weather_application/model/main_Weather_Model.dart';
+import 'package:weather_application/model/forecast_Daily_Model.dart';
 
 class ForecastModel {
   int? timezone;

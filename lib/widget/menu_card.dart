@@ -44,7 +44,7 @@ class TemperatureCard extends StatelessWidget {
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
                   // "${temperature.toString().substring(0, temperature.toString().indexOf('C'))}\u2103",
-                  temperature.toString() + ' \u2103',
+                  '$temperature \u2103',
                   style: trueBlackTextStyle.copyWith(
                       fontSize: 28, fontWeight: semiBold),
                 ),

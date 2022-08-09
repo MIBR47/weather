@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 
-import 'package:weather_application/argument/filter_argument.dart';
 import 'package:weather_application/provider/weather_Provider.dart';
 
 import 'package:weather_application/theme.dart';

@@ -1,7 +1,10 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:weather_application/model/forecast_Model.dart';
 import 'package:weather_application/model/weather_Model.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 class WeatherService {
@@ -46,8 +49,6 @@ class WeatherService {
   Future<WeatherModel> getWeatherByCityName(String city) async {
     var url = Uri.parse('$baseUrl/weather?q=$city&appid=$apiKey&units=metric');
     var response = await http.get(url);
-    print(response.statusCode);
-    print(response.body);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

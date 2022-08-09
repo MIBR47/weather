@@ -9,7 +9,6 @@ import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_application/argument/Dashboard_argument.dart';
 import 'package:weather_application/pages/search_page.dart';
-import 'package:weather_application/pages/weather_forecast_list_pages.dart';
 import 'package:weather_application/provider/weather_Provider.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
@@ -57,8 +56,6 @@ class _DashboardPageState extends State<DashboardPage> {
     // WeatherFactory wf = WeatherFactory(key);
     // late Weather? data = _data;
     var weatherProvider = Provider.of<WeatherProvider>(context);
-    final data =
-        ModalRoute.of(context)?.settings.arguments as DashboardArguments;
     int? timezone = weatherProvider.weather.timezone;
     var now = DateTime.now().add(
         Duration(seconds: timezone! - DateTime.now().timeZoneOffset.inSeconds));

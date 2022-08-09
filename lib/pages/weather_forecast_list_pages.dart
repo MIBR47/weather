@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
-import 'package:weather/weather.dart';
 import 'package:weather_application/model/forecast_Model.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';

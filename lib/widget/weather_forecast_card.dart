@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:intl/intl.dart';
-import 'package:weather/weather.dart';
-import 'package:weather_application/model/forecastDaily_Model.dart';
-import 'package:weather_application/model/forecast_Model.dart';
+import 'package:weather_application/model/forecast_Daily_Model.dart';
 import 'package:weather_application/theme.dart';
 
 class WeatherForecastCard extends StatelessWidget {
@@ -14,11 +12,7 @@ class WeatherForecastCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('E, dd MMM yyyy');
-    final DateFormat formatterTime = DateFormat.jm();
     String temperature = daily.temp.toString();
-    int? timezone = daily.dt;
-    var now = DateTime.now().add(
-        Duration(seconds: timezone! - DateTime.now().timeZoneOffset.inSeconds));
 
     return Card(
       elevation: 7,

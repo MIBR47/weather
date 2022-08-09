@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weather/weather.dart';
-import 'package:weather_application/argument/filter_argument.dart';
 import 'package:weather_application/provider/weather_Provider.dart';
 
 class SearchPage extends StatefulWidget {
@@ -41,10 +39,12 @@ class _SearchPageState extends State<SearchPage> {
 
   getForecast(String enteredKeyword) async {
     await Provider.of<WeatherProvider>(context, listen: false)
-        .getWeatherCity(enteredKeyword);
-    Navigator.of(context).pushReplacementNamed(
-      '/filter',
-    );
+        .getWeatherByCityName(enteredKeyword);
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed(
+        '/filter',
+      );
+    }
   }
 
   @override
