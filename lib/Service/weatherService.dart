@@ -24,25 +24,39 @@ class WeatherService {
     }
   }
 
-  Future<List<ForecastModel>> getForecastWeather(
-      double lat, double long) async {
-    var apiKey = '333ae8a687035bbe74d1af6b1171aace';
-
+  Future<ForecastModel> getForecastWeather(double lat, double long) async {
     var url = Uri.parse(
         '$baseUrl/onecall?lat=$lat&lon=$long&exclude=minutely,hourly,alerts&appid=$apiKey&units=metric&lang=id');
 
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
-      List data = jsonDecode(response.body)['daily'];
-      List<ForecastModel> forecast = [];
-      for (var item in data) {
-        forecast.add(ForecastModel.fromJson(item));
-      }
+      var data = jsonDecode(response.body);
+      ForecastModel forecast = ForecastModel.fromJson(data);
+
+      print('test');
+      print(forecast);
 
       return forecast;
     } else {
-      throw Exception('Salah Di Service Get Forecast');
+      throw Exception('something went wrong with Service Get Forecast');
+    }
+  }
+
+  Future<WeatherModel> getWeatherByCityName(String city) async {
+    var url = Uri.parse('$baseUrl/weather?q=$city&appid=$apiKey&units=metric');
+    var response = await http.get(url);
+    print(response.statusCode);
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      WeatherModel weather = WeatherModel.fromJson(data);
+
+      return weather;
+    } else {
+      throw Exception(
+          'something went wrong with Service Get Weather by City Name');
     }
   }
 }

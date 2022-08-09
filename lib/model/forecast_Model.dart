@@ -1,38 +1,26 @@
-import 'package:weather_application/model/Main_Weather_Model.dart';
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+import 'package:weather_application/model/forecastDaily_Model.dart';
+import 'package:weather_application/model/main_Weather_Model.dart';
 
 class ForecastModel {
-  var dt;
-  double? temp;
-  double? windspeed;
-
-  double? rain;
-  List<MainWeatherModel>? weather;
+  int? timezone;
+  List<ForecastDailyModel>? daily;
 
   ForecastModel({
-    this.dt,
-    this.temp,
-    this.rain,
-    this.weather,
+    this.timezone,
+    this.daily,
   });
 
   ForecastModel.fromJson(Map<String, dynamic> json) {
-    dt = json['dt'];
-    windspeed = json['wind_speed'];
-    temp = json['temp']['day'];
-
-    rain = json['rain'];
-    weather = json['weather']
-        .map<MainWeatherModel>((weather) => MainWeatherModel.fromJson(weather))
+    timezone = json['timezone_offset'];
+    daily = json['daily']
+        .map<ForecastDailyModel>((daily) => ForecastDailyModel.fromJson(daily))
         .toList();
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'dt': dt,
-      'temp': temp,
-      'winds': windspeed,
-      'rain': rain,
-      'weather': weather!.map((weather) => weather.toJson()).toList(),
+      'timezone_offset': timezone,
     };
   }
 }

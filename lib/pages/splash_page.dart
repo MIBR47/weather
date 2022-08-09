@@ -36,24 +36,6 @@ class _MSplashPage extends State<SplashPage> {
     super.initState();
   }
 
-  getWeather(Position currentposition) async {
-    // await Provider.of<LocationProvider>(context, listen: false)
-    //     .getCurrentLocation();
-
-    double lat = currentposition.latitude;
-    double long = currentposition.longitude;
-
-    await Provider.of<WeatherProvider>(context, listen: false)
-        .getWeather(lat, long);
-    Navigator.of(context).pushReplacementNamed(
-      '/dashboard',
-      arguments: DashboardArguments(currentposition),
-    );
-
-    // Navigator.push(
-    //     context, MaterialPageRoute(builder: (context) => HomePage()));
-  }
-
   Future<Position?> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -81,16 +63,10 @@ class _MSplashPage extends State<SplashPage> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks[0];
       if (mounted) {
-        setState(
-          () {
-            currentposition = position;
-            currentAddress =
-                " ${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea} ${place.postalCode}";
-
-            getWeather(currentposition!);
-            // Loader.hide();
-          },
-        );
+        getWeather(position);
+        getForecast(position);
+        currentAddress =
+            " ${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea} ${place.postalCode}";
       }
 
       return currentposition;
@@ -100,6 +76,33 @@ class _MSplashPage extends State<SplashPage> {
 
       return null;
     }
+  }
+
+  getWeather(Position currentposition) async {
+    // await Provider.of<LocationProvider>(context, listen: false)
+    //     .getCurrentLocation();
+
+    double lat = currentposition.latitude;
+    double long = currentposition.longitude;
+
+    await Provider.of<WeatherProvider>(context, listen: false)
+        .getWeather(lat, long);
+    await Provider.of<WeatherProvider>(context, listen: false)
+        .getforecast(lat, long);
+    Navigator.of(context).pushReplacementNamed(
+      '/dashboard',
+      arguments: DashboardArguments(currentposition),
+    );
+
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => HomePage()));
+  }
+
+  getForecast(Position currentposition) async {
+    double lat = currentposition.latitude;
+    double long = currentposition.longitude;
+    await Provider.of<WeatherProvider>(context, listen: false)
+        .getforecast(lat, long);
   }
 
   @override

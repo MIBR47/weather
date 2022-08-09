@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:intl/intl.dart';
 import 'package:weather/weather.dart';
+import 'package:weather_application/model/forecastDaily_Model.dart';
+import 'package:weather_application/model/forecast_Model.dart';
 import 'package:weather_application/theme.dart';
 
 class WeatherForecastCard extends StatelessWidget {
-  final Weather weather;
-  const WeatherForecastCard({required this.weather, Key? key})
-      : super(key: key);
+  // final ForecastModel weather;
+  final ForecastDailyModel daily;
+  const WeatherForecastCard({Key? key, required this.daily}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('E, dd MMM yyyy');
     final DateFormat formatterTime = DateFormat.jm();
-    String temperature = weather.temperature.toString();
+    String temperature = daily.temp.toString();
+    int? timezone = daily.dt;
+    var now = DateTime.now().add(
+        Duration(seconds: timezone! - DateTime.now().timeZoneOffset.inSeconds));
 
     return Card(
       elevation: 7,
@@ -28,7 +33,7 @@ class WeatherForecastCard extends StatelessWidget {
         child: Stack(
           children: [
             WeatherBg(
-              weatherType: weatherBackgroud(weather.weatherMain.toString()),
+              weatherType: weatherBackgroud(daily.weather![0].mainWeather!),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.1,
             ),
@@ -41,13 +46,16 @@ class WeatherForecastCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        formatter.format(weather.date!).toString(),
+                        formatter
+                            .format(DateTime.fromMillisecondsSinceEpoch(
+                                daily.dt * 1000))
+                            .toString(),
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 15, fontWeight: semiBold),
                       ),
                       Text(
-                        formatterTime.format(weather.date!).toString(),
+                        daily.weather![0].mainWeather!,
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 15, fontWeight: semiBold),
@@ -55,7 +63,7 @@ class WeatherForecastCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    "${temperature.substring(0, temperature.indexOf('C'))}\u2103",
+                    '$temperature \u2103',
                     textAlign: TextAlign.left,
                     style: whiteTextStyle.copyWith(
                         fontSize: 15, fontWeight: semiBold),

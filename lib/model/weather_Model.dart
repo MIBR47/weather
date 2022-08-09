@@ -4,7 +4,7 @@ import 'package:weather_application/model/temperature_Model.dart';
 
 class WeatherModel {
   String? name;
-  List<MainWeatherModel>? mainWeather;
+  List<MainWeatherModel>? weather;
   TemperatureModel? mainTemp;
   int? clouds;
   int? dt;
@@ -14,7 +14,7 @@ class WeatherModel {
 
   WeatherModel({
     this.name,
-    this.mainWeather,
+    this.weather,
     this.mainTemp,
     this.clouds,
     this.lon,
@@ -23,7 +23,7 @@ class WeatherModel {
 
   WeatherModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    mainWeather = json['weather']
+    weather = json['weather']
         .map<MainWeatherModel>((weather) => MainWeatherModel.fromJson(weather))
         .toList();
     mainTemp = TemperatureModel.fromJson(json['main']);
@@ -37,7 +37,7 @@ class WeatherModel {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'weather': mainWeather!.map((weather) => weather.toJson()).toList(),
+      'weather': weather!.map((weather) => weather.toJson()).toList(),
       'main': mainTemp!.toJson(),
       'dt': dt,
       'timezone': timezone,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:weather/weather.dart';
+import 'package:weather_application/model/forecast_Model.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
 
 class WeatherListPage extends StatelessWidget {
-  final List<Weather> listDataWeather;
+  final ForecastModel listDataWeather;
   const WeatherListPage({required this.listDataWeather, Key? key})
       : super(key: key);
 
@@ -18,7 +19,7 @@ class WeatherListPage extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.90,
             height: MediaQuery.of(context).size.height * 1.5,
             child: ListView.builder(
-              itemCount: listDataWeather.length,
+              itemCount: listDataWeather.daily?.length,
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
@@ -30,7 +31,9 @@ class WeatherListPage extends StatelessWidget {
                   hasMore: true,
                   // ignore: avoid_print
                   loadMore: () => print('Loading More'),
-                  child: WeatherForecastCard(weather: listDataWeather[index]),
+                  child: WeatherForecastCard(
+                    daily: listDataWeather.daily![index],
+                  ),
                 );
 
                 // ignore: avoid_print

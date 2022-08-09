@@ -112,7 +112,7 @@ class _DashboardPageState extends State<DashboardPage> {
               width: 10,
             ),
             WeatherCard(
-              weather: weatherProvider.weather.mainWeather![0].mainWeather!,
+              weather: weatherProvider.weather.weather![0].mainWeather!,
             ),
           ],
         ),
@@ -165,7 +165,7 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           WeatherBg(
             weatherType: weatherBackgroud(
-                weatherProvider.weather.mainWeather![0].mainWeather!),
+                weatherProvider.weather.weather![0].mainWeather!),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.45,
           ),
@@ -205,22 +205,23 @@ class _DashboardPageState extends State<DashboardPage> {
             width: MediaQuery.of(context).size.width * 0.90,
             height: MediaQuery.of(context).size.height * 0.4,
             child: ListView.builder(
-              itemCount: _listDataWeather.length,
+              itemCount: weatherProvider.forecast.daily?.length,
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 // final weather = _listDataWeather[index];
                 return Visibility(
-                  visible: index < 5,
+                  visible: true,
                   child: LazyLoadingList(
                     initialSizeOfItems: 5,
                     index: index,
                     hasMore: true,
                     // ignore: avoid_print
                     loadMore: () => print('Loading More'),
-                    child:
-                        WeatherForecastCard(weather: _listDataWeather[index]),
+                    child: WeatherForecastCard(
+                      daily: weatherProvider.forecast.daily![index],
+                    ),
                   ),
                 );
 
@@ -260,12 +261,12 @@ class _DashboardPageState extends State<DashboardPage> {
                         fontSize: 14, fontWeight: light),
                   ),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WeatherListPage(
-                                  listDataWeather: _listDataWeather,
-                                )));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => WeatherListPage(
+                    //               listDataWeather: _listDataWeather,
+                    //             )));
                   },
                 )
               ],
