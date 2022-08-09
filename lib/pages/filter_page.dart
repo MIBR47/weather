@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
+import 'package:provider/provider.dart';
 
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 
 import 'package:weather_application/argument/filter_argument.dart';
+import 'package:weather_application/provider/weather_Provider.dart';
 
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
@@ -31,7 +33,8 @@ class _FilterPageState extends State<FilterPage> {
   Widget build(BuildContext context) {
     // WeatherFactory wf = WeatherFactory(key);
     // late Weather? data = _data;
-    final data = ModalRoute.of(context)?.settings.arguments as FilterArguments;
+    // final data = ModalRoute.of(context)?.settings.arguments as FilterArguments;
+    var weatherProvider = Provider.of<WeatherProvider>(context);
     // final position = ModalRoute.of(context)?.settings.arguments as Weather;
 
     Widget nama() {
@@ -48,13 +51,16 @@ class _FilterPageState extends State<FilterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.weather.areaName.toString(),
+                        weatherProvider.weather.name!,
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 20, fontWeight: semiBold),
                       ),
                       Text(
-                        formatter.format(data.weather.date!).toString(),
+                        formatter
+                            .format(DateTime.fromMillisecondsSinceEpoch(
+                                weatherProvider.weather.dt! * 1000))
+                            .toString(),
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 16, fontWeight: semiBold),
@@ -81,21 +87,22 @@ class _FilterPageState extends State<FilterPage> {
             //   temperature: data.weather.temperature.toString(),
             // ),
             WeatherCard(
-              weather: data.weather.weatherMain.toString(),
+              weather:
+                  weatherProvider.weather.weather![0].mainWeather.toString(),
             ),
-            HumidityCard(
+            ElseCard(
               data:
-                  "${data.weather.tempFeelsLike.toString().substring(0, data.weather.tempFeelsLike.toString().indexOf('C'))}\u2103",
+                  "${weatherProvider.weather.mainTemp!.feelsLike.toString()}\u2103",
               name: "Feels Like",
-              fontsize: 32,
+              fontsize: 30,
             ),
-            HumidityCard(
-              data: data.weather.humidity.toString(),
+            ElseCard(
+              data: weatherProvider.weather.mainTemp!.humidity.toString(),
               name: "Humidity",
               fontsize: 32,
             ),
-            HumidityCard(
-              data: data.weather.pressure.toString() + "hPa",
+            ElseCard(
+              data: "${weatherProvider.weather.mainTemp!.pressure}hPa",
               name: "Air Pressure",
               fontsize: 23,
             ),
@@ -109,7 +116,8 @@ class _FilterPageState extends State<FilterPage> {
         // alignment: AlignmentDirectional.center,
         children: [
           WeatherBg(
-            weatherType: weatherBackgroud(data.weather.weatherMain.toString()),
+            weatherType: weatherBackgroud(
+                weatherProvider.weather.weather![0].mainWeather.toString()),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_application/argument/filter_argument.dart';
+import 'package:weather_application/provider/weather_Provider.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -20,21 +22,29 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   // This function is called whenever the text field changes
-  _runFilter(String enteredKeyword) async {
-    String key = "e253b441ac228c01226cb2ddbecfded4";
-    late WeatherFactory ws;
-    ws = WeatherFactory(key);
-    //  await ws.currentWeatherByCityName(enteredKeyword) == ws,.??
+  // _runFilter(String enteredKeyword) async {
+  //   String key = "e253b441ac228c01226cb2ddbecfded4";
+  //   late WeatherFactory ws;
+  //   ws = WeatherFactory(key);
+  //   //  await ws.currentWeatherByCityName(enteredKeyword) == ws,.??
 
-    Weather weather = await ws.currentWeatherByCityName(enteredKeyword);
+  //   Weather weather = await ws.currentWeatherByCityName(enteredKeyword);
 
-    // ignore: use_build_context_synchronously
+  //   // ignore: use_build_context_synchronously
+  //   Navigator.of(context).pushReplacementNamed(
+  //     '/filter',
+  //     arguments: FilterArguments(weather),
+  //   );
+  //   // Navigator.of(context)
+  //   //     .pushReplacementNamed('/dashboard', arguments: weather);
+  // }
+
+  getForecast(String enteredKeyword) async {
+    await Provider.of<WeatherProvider>(context, listen: false)
+        .getWeatherCity(enteredKeyword);
     Navigator.of(context).pushReplacementNamed(
       '/filter',
-      arguments: FilterArguments(weather),
     );
-    // Navigator.of(context)
-    //     .pushReplacementNamed('/dashboard', arguments: weather);
   }
 
   @override
@@ -46,7 +56,7 @@ class _SearchPageState extends State<SearchPage> {
           controller: weatherController,
           autofocus: true,
           onSubmitted: (value) async {
-            await _runFilter(value);
+            await getForecast(value);
           },
           // onChanged: (value) => _runFilter(value),
           decoration: InputDecoration(

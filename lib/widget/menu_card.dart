@@ -57,11 +57,11 @@ class TemperatureCard extends StatelessWidget {
   }
 }
 
-class HumidityCard extends StatelessWidget {
+class ElseCard extends StatelessWidget {
   final String data;
   final String name;
   final double fontsize;
-  const HumidityCard(
+  const ElseCard(
       {required this.data,
       Key? key,
       required this.name,

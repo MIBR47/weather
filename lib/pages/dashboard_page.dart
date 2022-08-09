@@ -250,7 +250,7 @@ class _DashboardPageState extends State<DashboardPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '5 Day Weather Forecast',
+                  '8 Day Weather Forecast',
                   style: trueBlackTextStyle.copyWith(
                       fontSize: 16, fontWeight: semiBold),
                 ),
