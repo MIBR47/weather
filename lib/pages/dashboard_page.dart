@@ -4,11 +4,13 @@ import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_application/Service/Dashboard_argument.dart';
+import 'package:weather_application/argument/Dashboard_argument.dart';
 import 'package:weather_application/pages/search_page.dart';
 import 'package:weather_application/pages/weather_forecast_list_pages.dart';
+import 'package:weather_application/provider/weather_Provider.dart';
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
 import 'package:weather_application/widget/weather_forecast_card.dart';
@@ -54,8 +56,12 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     // WeatherFactory wf = WeatherFactory(key);
     // late Weather? data = _data;
+    var weatherProvider = Provider.of<WeatherProvider>(context);
     final data =
         ModalRoute.of(context)?.settings.arguments as DashboardArguments;
+    int? timezone = weatherProvider.weather.timezone;
+    var now = DateTime.now().add(
+        Duration(seconds: timezone! - DateTime.now().timeZoneOffset.inSeconds));
     // final position = ModalRoute.of(context)?.settings.arguments as Weather;
 
     Widget nama() {
@@ -72,13 +78,13 @@ class _DashboardPageState extends State<DashboardPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.weather.areaName.toString(),
+                        weatherProvider.weather.name.toString(),
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 20, fontWeight: semiBold),
                       ),
                       Text(
-                        formatter.format(data.weather.date!).toString(),
+                        formatter.format(now).toString(),
                         textAlign: TextAlign.left,
                         style: whiteTextStyle.copyWith(
                             fontSize: 16, fontWeight: semiBold),
@@ -100,13 +106,13 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TemperatureCard(
-              temperature: data.weather.temperature.toString(),
+              temperature: weatherProvider.weather.mainTemp?.temperature,
             ),
             const SizedBox(
               width: 10,
             ),
             WeatherCard(
-              weather: data.weather.weatherMain.toString(),
+              weather: weatherProvider.weather.mainWeather![0].mainWeather!,
             ),
           ],
         ),
@@ -158,7 +164,8 @@ class _DashboardPageState extends State<DashboardPage> {
       return Stack(
         children: [
           WeatherBg(
-            weatherType: weatherBackgroud(data.weather.weatherMain.toString()),
+            weatherType: weatherBackgroud(
+                weatherProvider.weather.mainWeather![0].mainWeather!),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.45,
           ),

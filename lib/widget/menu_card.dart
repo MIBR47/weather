@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_application/theme.dart';
 
 class TemperatureCard extends StatelessWidget {
-  final String temperature;
+  final double? temperature;
   const TemperatureCard({required this.temperature, Key? key})
       : super(key: key);
 
@@ -43,9 +43,10 @@ class TemperatureCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  "${temperature.substring(0, temperature.indexOf('C'))}\u2103",
+                  // "${temperature.toString().substring(0, temperature.toString().indexOf('C'))}\u2103",
+                  temperature.toString() + ' \u2103',
                   style: trueBlackTextStyle.copyWith(
-                      fontSize: 32, fontWeight: semiBold),
+                      fontSize: 28, fontWeight: semiBold),
                 ),
               )
             ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
-import 'package:weather_application/Service/filter_argument.dart';
+import 'package:weather_application/argument/filter_argument.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);

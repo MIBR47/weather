@@ -4,7 +4,7 @@ import 'package:flutter_weather_bg_null_safety/flutter_weather_bg.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 
-import 'package:weather_application/Service/filter_argument.dart';
+import 'package:weather_application/argument/filter_argument.dart';
 
 import 'package:weather_application/theme.dart';
 import 'package:weather_application/widget/menu_card.dart';
@@ -77,9 +77,9 @@ class _FilterPageState extends State<FilterPage> {
           runSpacing: 10,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TemperatureCard(
-              temperature: data.weather.temperature.toString(),
-            ),
+            // TemperatureCard(
+            //   temperature: data.weather.temperature.toString(),
+            // ),
             WeatherCard(
               weather: data.weather.weatherMain.toString(),
             ),

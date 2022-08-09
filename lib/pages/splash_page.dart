@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:weather/weather.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_application/Service/Dashboard_argument.dart';
+import 'package:weather_application/argument/Dashboard_argument.dart';
+import 'package:weather_application/provider/weather_Provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -34,20 +36,22 @@ class _MSplashPage extends State<SplashPage> {
     super.initState();
   }
 
-  queryWeather(Position currentposition) async {
-    /// Removes keyboard
-    // FocusScope.of(context).requestFocus(FocusNode());
+  getWeather(Position currentposition) async {
+    // await Provider.of<LocationProvider>(context, listen: false)
+    //     .getCurrentLocation();
+
     double lat = currentposition.latitude;
-    double lon = currentposition.longitude;
+    double long = currentposition.longitude;
 
-    ws = WeatherFactory(key);
-    Weather weather = await ws.currentWeatherByLocation(lat, lon);
-
-    // ignore: use_build_context_synchronously
+    await Provider.of<WeatherProvider>(context, listen: false)
+        .getWeather(lat, long);
     Navigator.of(context).pushReplacementNamed(
       '/dashboard',
-      arguments: DashboardArguments(weather, currentposition),
+      arguments: DashboardArguments(currentposition),
     );
+
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   Future<Position?> _determinePosition() async {
@@ -82,7 +86,8 @@ class _MSplashPage extends State<SplashPage> {
             currentposition = position;
             currentAddress =
                 " ${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea} ${place.postalCode}";
-            queryWeather(currentposition!);
+
+            getWeather(currentposition!);
             // Loader.hide();
           },
         );
