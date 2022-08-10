@@ -10,6 +10,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_application/argument/Dashboard_argument.dart';
 import 'package:weather_application/provider/weather_Provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -27,13 +28,51 @@ class _MSplashPage extends State<SplashPage> {
   void initState() {
     // clear();
     // getregion();
-    _determinePosition();
+    validator();
+    // _determinePosition();
     // Timer(
     //   const Duration(seconds: 2),
     //   () => Navigator.of(context).pushReplacementNamed('/dashboard'),
     // );
 
     super.initState();
+  }
+
+  validator() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      await _determinePosition();
+      await getWeather(currentposition!);
+      await getForecast(currentposition!);
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(
+          '/dashboard',
+          arguments: DashboardArguments(currentposition!),
+        );
+      } else {
+        return ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.amber,
+            content: Text(
+              'Something went Wrong',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    } else if (connectivityResult == ConnectivityResult.none) {
+      // I am connected to a wifi network.
+      return ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.amber,
+          content: Text(
+            'No interner access',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
   }
 
   Future<Position?> _determinePosition() async {
@@ -63,13 +102,12 @@ class _MSplashPage extends State<SplashPage> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks[0];
       if (mounted) {
-        getWeather(position);
-        getForecast(position);
+        currentposition = position;
         currentAddress =
             " ${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea} ${place.postalCode}";
       }
 
-      return currentposition;
+      return position;
     } catch (e) {
       // ignore: avoid_print
       print(e);
@@ -87,13 +125,6 @@ class _MSplashPage extends State<SplashPage> {
 
     await Provider.of<WeatherProvider>(context, listen: false)
         .getWeather(lat, long);
-
-    if (mounted) {
-      Navigator.of(context).pushReplacementNamed(
-        '/dashboard',
-        arguments: DashboardArguments(currentposition),
-      );
-    }
 
     // Navigator.push(
     //     context, MaterialPageRoute(builder: (context) => HomePage()));
