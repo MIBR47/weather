@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -16,28 +17,21 @@ class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _MSplashPage();
+  State<SplashPage> createState() => _SplashPage();
 }
 
-class _MSplashPage extends State<SplashPage> {
+class _SplashPage extends State<SplashPage> {
   String currentAddress = 'My Address';
   Position? currentposition;
   String key = "e253b441ac228c01226cb2ddbecfded4";
   late WeatherFactory ws;
   @override
   void initState() {
-    // clear();
-    // getregion();
     validator();
-    // _determinePosition();
-    // Timer(
-    //   const Duration(seconds: 2),
-    //   () => Navigator.of(context).pushReplacementNamed('/dashboard'),
-    // );
-
     super.initState();
   }
 
+  ///Untuk validasi sebelum masuk kedalam dashboard
   validator() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -51,30 +45,62 @@ class _MSplashPage extends State<SplashPage> {
           arguments: DashboardArguments(currentposition!),
         );
       } else {
-        return ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.amber,
-            content: Text(
-              'Something went Wrong',
-              textAlign: TextAlign.center,
+        AlertDialog alert = AlertDialog(
+          title: const Text('Something went Wrong'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Try again?'),
+              ],
             ),
           ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => exit(0),
+              child: const Text('Exit'),
+            ),
+            TextButton(
+              onPressed: () {
+                validator();
+                Navigator.pop(context);
+              },
+              child: const Text('Try again'),
+            ),
+          ],
         );
+        showDialog(context: context, builder: (context) => alert);
       }
     } else if (connectivityResult == ConnectivityResult.none) {
       // I am connected to a wifi network.
-      return ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.amber,
-          content: Text(
-            'No interner access',
-            textAlign: TextAlign.center,
+      AlertDialog alert = AlertDialog(
+        title: const Text('Something went Wrong'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: const <Widget>[
+              Text('No internet Access.'),
+              Text('Try again?'),
+            ],
           ),
         ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => exit(0),
+            child: const Text('Exit'),
+          ),
+          TextButton(
+            onPressed: () {
+              validator();
+              Navigator.pop(context);
+            },
+            child: const Text('Try again'),
+          ),
+        ],
       );
+      showDialog(context: context, builder: (context) => alert);
     }
   }
 
+  ///Untuk mendapatkan lokasi sekarang dari pengguna
   Future<Position?> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;

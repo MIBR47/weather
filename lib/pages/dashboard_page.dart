@@ -26,29 +26,15 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final DateFormat formatter = DateFormat('E, dd MMM yyyy');
   late WeatherFactory wf;
-  List<Weather> _listDataWeather = [];
 
   @override
   void initState() {
-    weather5days(widget.arguments.position);
     super.initState();
   }
 
-  weather5days(Position position) async {
-    /// Removes keyboard
-    // FocusScope.of(context).requestFocus(FocusNode());
-    String key = "e253b441ac228c01226cb2ddbecfded4";
-    double lat = position.latitude;
-    double lon = position.longitude;
-    wf = WeatherFactory(key);
-    List<Weather> weather = await wf.fiveDayForecastByLocation(lat, lon);
-    // Weather weather2 = await wf.currentWeatherByCityName(cityName);
-    setState(() {
-      // print(weather2);
-      _listDataWeather = weather;
-      // print(_listDataWeather);
-      // _state = AppState.FINISHED_DOWNLOADING;
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -60,6 +46,7 @@ class _DashboardPageState extends State<DashboardPage> {
     var now = DateTime.now().add(
         Duration(seconds: timezone! - DateTime.now().timeZoneOffset.inSeconds));
     // final position = ModalRoute.of(context)?.settings.arguments as Weather;
+    List weather = weatherProvider.forecast.daily!;
 
     Widget nama() {
       return Column(
@@ -268,7 +255,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 )
               ],
             ),
-            _listDataWeather == []
+            weatherProvider.forecast.daily! == []
                 ? LoadingAnimationWidget.staggeredDotsWave(
                     color: Colors.white,
                     size: 200,

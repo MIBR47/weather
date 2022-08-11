@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_application/provider/weather_Provider.dart';
@@ -19,32 +20,47 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
-  // This function is called whenever the text field changes
-  // _runFilter(String enteredKeyword) async {
-  //   String key = "e253b441ac228c01226cb2ddbecfded4";
-  //   late WeatherFactory ws;
-  //   ws = WeatherFactory(key);
-  //   //  await ws.currentWeatherByCityName(enteredKeyword) == ws,.??
-
-  //   Weather weather = await ws.currentWeatherByCityName(enteredKeyword);
-
-  //   // ignore: use_build_context_synchronously
-  //   Navigator.of(context).pushReplacementNamed(
-  //     '/filter',
-  //     arguments: FilterArguments(weather),
-  //   );
-  //   // Navigator.of(context)
-  //   //     .pushReplacementNamed('/dashboard', arguments: weather);
-  // }
-
-  getForecast(String enteredKeyword) async {
+  ///Untuk mendapatkan data cuaca dari nama kota yang dimasukan
+  getWeatherBycityName(String enteredKeyword) async {
     await Provider.of<WeatherProvider>(context, listen: false)
         .getWeatherByCityName(enteredKeyword);
+
     if (mounted) {
       Navigator.of(context).pushReplacementNamed(
         '/filter',
       );
+    } else {
+      AlertDialog alert = AlertDialog(
+        title: const Text('Something went Wrong'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: const <Widget>[
+              Text('Try again?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              getWeatherBycityName(enteredKeyword);
+              Navigator.pop(context);
+            },
+            child: const Text('Try again'),
+          ),
+        ],
+      );
+      showDialog(context: context, builder: (context) => alert);
     }
+  }
+
+  @override
+  void dispose() {
+    weatherController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,7 +72,29 @@ class _SearchPageState extends State<SearchPage> {
           controller: weatherController,
           autofocus: true,
           onSubmitted: (value) async {
-            await getForecast(value);
+            var connectivityResult = await (Connectivity().checkConnectivity());
+            if (connectivityResult == ConnectivityResult.mobile ||
+                connectivityResult == ConnectivityResult.wifi) {
+              await getWeatherBycityName(value);
+            } else if (connectivityResult == ConnectivityResult.none) {
+              AlertDialog alert = AlertDialog(
+                title: const Text('Something went Wrong'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: const <Widget>[
+                      Text('No internet Access.'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('cancel'),
+                  ),
+                ],
+              );
+              showDialog(context: context, builder: (context) => alert);
+            }
           },
           // onChanged: (value) => _runFilter(value),
           decoration: InputDecoration(
@@ -85,8 +123,6 @@ class _SearchPageState extends State<SearchPage> {
                 child: Column(
                   children: [
                     searchbar(),
-                    // filtercard(),
-                    // cardlist(),
                   ],
                 ),
               ),
