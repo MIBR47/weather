@@ -8,7 +8,7 @@ import 'package:weather_application/model/weather_Model.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  var apiKey = 'e253b441ac228c01226cb2ddbecfded4';
+  var apiKey = 'Your APi key';
   var baseUrl = 'https://api.openweathermap.org/data/2.5';
 
   Future<WeatherModel> getWeather(double lat, double long) async {
